@@ -1,35 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
-// import getCurrentUser, { getData } from '../../services/storage';
-import { contactAdd } from '../../store/contactSlice';
+import { contactAdd, contactUpdate } from '../../store/contactSlice';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
+  const { contact } = useSelector((state) => state.contacts);
+  let { id } = useParams();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
-  const { contacts } = useSelector((state) => state.contacts);
 
-  let { id } = useParams();
-  let updateContacts = contacts.filter((item) => {
-    return item.id === Number(id);
-  });
-  console.log(updateContacts);
-
-  // {
-  // defaultValues: {
-  //   name: 'xyz',
-  //   phoneNumber: 3232523,
-  //   email: 'secret',
-  // },
-  // }
+  useEffect(() => {
+    dispatch(contactUpdate(id));
+    setValue('name', contact?.name ?? '');
+    setValue('email', contact?.email ?? '');
+    setValue('phoneNumber', contact?.phoneNumber ?? '');
+  }, [
+    contact?.email,
+    contact?.name,
+    contact?.phoneNumber,
+    dispatch,
+    id,
+    setValue,
+  ]);
 
   const navigate = useNavigate();
 

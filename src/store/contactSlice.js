@@ -1,11 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 import fakePromise from '../services/fakePromise';
-import getCurrentUser, { getData, setLocalStorage } from '../services/storage';
+import getCurrentUser, {
+  getData,
+  setLocalStorage,
+  getDataById,
+} from '../services/storage';
 
 const initialState = {
   contacts: [],
   status: 'idle',
+  contact: [],
 };
 
 export const contactList = createAsyncThunk(
@@ -42,9 +47,10 @@ export const contactDelete = createAsyncThunk(
 );
 
 export const contactUpdate = createAsyncThunk(
-  'contact/contactDelete',
-  async (obj, { getState }) => {
-    console.log(obj);
+  'contact/contactUpdate',
+  async (id) => {
+    const contact = getDataById(id);
+    return contact;
   }
 );
 export const contactSlice = createSlice({
@@ -84,6 +90,9 @@ export const contactSlice = createSlice({
       })
       .addCase(contactDelete.fulfilled, (state, { payload }) => {
         state.contacts = payload;
+      })
+      .addCase(contactUpdate.fulfilled, (state, { payload }) => {
+        state.contact = payload;
       });
   },
 });

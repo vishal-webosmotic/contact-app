@@ -17,3 +17,11 @@ export function getData(key) {
 export function setLocalStorage(value) {
   return localStorage.setItem(getCurrentUser(), JSON.stringify(value));
 }
+
+export function getDataById(id) {
+  let currentUserList = getData(getCurrentUser());
+  const getContact = currentUserList.find((item) => {
+    return item.id === Number(id);
+  });
+  return getContact;
+}

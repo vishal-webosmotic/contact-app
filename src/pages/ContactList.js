@@ -7,11 +7,7 @@ import './contact-form/ContactForm.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  contactList,
-  contactDelete,
-  // contactUpdate,
-} from '../store/contactSlice';
+import { contactList, contactDelete } from '../store/contactSlice';
 import { logout } from '../store/userSlice';
 
 const ContactList = () => {
