@@ -70,12 +70,7 @@ const ContactForm = () => {
         <>
           <div className="container">
             <form onSubmit={handleSubmit(onSubmit)}>
-              {id ? (
-                <h1>Edit contact details</h1>
-              ) : (
-                <h1>Add contact details</h1>
-              )}
-              {/* <h1>Add contact details</h1> */}
+              <h1> {id ? 'Edit' : 'Add'} contact Details </h1>
               <div className="inputContainer">
                 <label htmlFor="name">Name</label>
                 <input

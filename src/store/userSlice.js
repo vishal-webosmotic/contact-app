@@ -37,13 +37,16 @@ export const login = createAsyncThunk('user/login', async (item) => {
   throw new Error('user not found');
 });
 
-export const logout = createAsyncThunk('user/logout', async () => {
-  await fakePromise();
-  if (localStorage.getItem('currentUser')) {
-    localStorage.removeItem('currentUser');
+export const logout = createAsyncThunk(
+  'user/logout',
+  async (_, { getState }) => {
+    await fakePromise();
+    // if (localStorage.getItem('currentUser')) {
+    //   localStorage.removeItem('currentUser');
+    // }
+    // throw "error";
   }
-  // throw "error";
-});
+);
 
 export const userSlice = createSlice({
   name: 'user',
@@ -67,9 +70,10 @@ export const userSlice = createSlice({
       .addCase(logout.pending, (state, action) => {
         state.loading = true;
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logout.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.user = null;
+        localStorage.removeItem('currentUser');
       })
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
