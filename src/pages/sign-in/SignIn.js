@@ -1,11 +1,14 @@
+import Button from 'react-bootstrap/Button';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { login } from '../../store/userSlice';
 
 export default function SignIn() {
   const { error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
   // console.log("{ error, ...rest }", { error, ...rest });
   // const status = useSelector(getPostsStatus);
   const dispatch = useDispatch();
@@ -20,6 +23,9 @@ export default function SignIn() {
     },
   });
 
+  const onSignUp = () => {
+    navigate('/signup');
+  };
   const onSubmit = (data) => {
     // console.log('line 24', data);
     dispatch(login(data));
@@ -67,9 +73,15 @@ export default function SignIn() {
         {error}
         <button>SIGN In</button>
       </form>
-      <Link to="/signup" replace={true}>
+      {/* <Link to="/signup" replace={true}>
         become a user?
-      </Link>
+      </Link> */}
+      <div className="signUpButton">
+        <h4>become a user?</h4>
+        <Button variant="primary" size="lg" onClick={onSignUp}>
+          Sign Up
+        </Button>
+      </div>
     </div>
   );
   // }

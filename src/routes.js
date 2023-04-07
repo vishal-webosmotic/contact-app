@@ -36,4 +36,8 @@ export const contactRoutes = createBrowserRouter([
     path: '/contact/:id',
     element: <ContactForm />,
   },
+  {
+    path: '*',
+    element: <ErrorPage />,
+  },
 ]);

@@ -11,6 +11,7 @@ const initialState = {
   contacts: [],
   status: 'idle',
   contact: [],
+  isLoad: false,
 };
 
 export const contactList = createAsyncThunk(
@@ -18,9 +19,7 @@ export const contactList = createAsyncThunk(
   async (_, { getState }) => {
     await fakePromise();
     const state = getState();
-    // console.log(state, "{{{{");
     let { user } = state.user;
-    // console.log("line 23 email", user);
     const localStorageData = getData(user);
     return localStorageData;
   }
@@ -28,7 +27,26 @@ export const contactList = createAsyncThunk(
 
 export const contactAdd = createAsyncThunk(
   'contact/contactAdd',
-  async (obj) => {
+  async (obj, { getState }) => {
+    const { id } = obj;
+    if (id) {
+      // obj.id = Number(id);
+      // let allContacts = JSON.parse(localStorage.getItem(getCurrentUser()));
+      let allContacts = getData(getCurrentUser());
+      allContacts.splice(
+        allContacts.findIndex((item) => item.id.toString() === id.toString()),
+        1,
+        obj
+      );
+      setLocalStorage(allContacts);
+    } else {
+      const newId = Math.floor(Math.random() * 1000);
+      obj.id = newId;
+      console.log(obj);
+      const localStorageData = getData(getCurrentUser());
+      localStorageData.push(obj);
+      setLocalStorage(localStorageData);
+    }
     return obj;
   }
 );
@@ -45,9 +63,12 @@ export const contactDelete = createAsyncThunk(
     return afterDelete;
   }
 );
+export const clearData = createAsyncThunk('contact/contactData', () => {
+  return true;
+});
 
-export const contactUpdate = createAsyncThunk(
-  'contact/contactUpdate',
+export const contactDetailsField = createAsyncThunk(
+  'contact/contactDetailsField',
   async (id) => {
     const contact = getDataById(id);
     return contact;
@@ -76,13 +97,8 @@ export const contactSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(contactAdd.fulfilled, (state, { payload }) => {
-        const id = Math.floor(Math.random() * 1000);
-        payload.id = id;
-        const localStorageData = getData(getCurrentUser());
-        localStorageData.push(payload);
-        setLocalStorage(localStorageData);
+        state.contacts = payload;
         state.status = 'succeeded';
-        state.contacts = localStorageData;
       })
       .addCase(contactAdd.rejected, (state, action) => {
         state.status = 'failed';
@@ -91,8 +107,15 @@ export const contactSlice = createSlice({
       .addCase(contactDelete.fulfilled, (state, { payload }) => {
         state.contacts = payload;
       })
-      .addCase(contactUpdate.fulfilled, (state, { payload }) => {
+      .addCase(contactDetailsField.fulfilled, (state, { payload }) => {
         state.contact = payload;
+      })
+      .addCase(clearData.pending, (state, { payload }) => {
+        state.isLoad = true;
+      })
+      .addCase(clearData.fulfilled, (state, { payload }) => {
+        state.isLoad = false;
+        state.contact = [];
       });
   },
 });

@@ -5,6 +5,17 @@ https://www.bezkoder.com/react-redux-login-example-toolkit-hooks/
 
 https://github1s.com/RamanSharma100/React-Redux-Contact-Book/blob/HEAD/src/components/AddContact/index.js
 
+<!-- .addCase(contactAdd.fulfilled, (state, { payload }) => {
+        // console.log(payload.obj, payload.id);
+        const id = Math.floor(Math.random() * 1000);
+        payload.id = id;
+        const localStorageData = getData(getCurrentUser());
+        localStorageData.push(payload);
+        setLocalStorage(localStorageData);
+        state.status = 'succeeded';
+        state.contacts = localStorageData;
+      }) -->
+
 <!-- import React from 'react';
 
 import Button from 'react-bootstrap/Button';

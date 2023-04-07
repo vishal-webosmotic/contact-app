@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 
 import Button from 'react-bootstrap/Button';
-import Spinner from 'react-bootstrap/Spinner';
+// import Spinner from 'react-bootstrap/Spinner';
 import Table from 'react-bootstrap/Table';
 import './contact-form/ContactForm.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import Loader from '../components/Spinner';
 import { contactList, contactDelete } from '../store/contactSlice';
 import { logout } from '../store/userSlice';
-
 const ContactList = () => {
   // const { error, user, ...rest } = useSelector((state) => state.user);
   // const state = useSelector((state) => state.contacts);
@@ -21,7 +21,7 @@ const ContactList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleClick = () => {
-    navigate('/contact');
+    navigate('/contact', { replace: true });
   };
 
   const handleLogout = () => {
@@ -35,7 +35,7 @@ const ContactList = () => {
   const handleUpdate = (id) => {
     // dispatch(contactUpdate(id));
     // navigate('/contact');
-    navigate(`/contact/${id}`);
+    navigate(`/contact/${id}`, { replace: true });
   };
 
   useEffect(() => {
@@ -43,7 +43,11 @@ const ContactList = () => {
   }, [dispatch]);
 
   if (status === 'loading') {
-    return <Spinner animation="border" />;
+    return (
+      <div className="myLoader">
+        <Loader />
+      </div>
+    );
   }
 
   if (status === 'succeeded') {
@@ -52,14 +56,14 @@ const ContactList = () => {
         <h1 className="center">Contact</h1>
         <div className="container">
           {contacts.length ? (
-            <Table striped bordered hover variant="dark">
+            <Table className="center " striped bordered hover variant="dark">
               <thead className="mb-2">
                 <tr>
                   <th>Email</th>
                   <th>Name</th>
-                  <th>PhoneNumber</th>
-                  <th></th>
-                  <th></th>
+                  <th>Phone Number</th>
+                  <th>Profile Photo</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -69,29 +73,37 @@ const ContactList = () => {
                     <td>{item.name}</td>
                     <td>{item.phoneNumber}</td>
                     <td>
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handleUpdate(item.id)}
-                      >
-                        Update
-                      </Button>
+                      <img
+                        src={item.image}
+                        alt="img"
+                        width="100px"
+                        height="100px"
+                      />
                     </td>
                     <td>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        delete
-                      </Button>
+                      <div className="actionButton">
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          onClick={() => handleUpdate(item.id)}
+                        >
+                          Update
+                        </Button>
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          delete
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </Table>
           ) : (
-            'contact not found '
+            'contact not found'
           )}
         </div>
         <div className="d-flex gap-2 text-center container">

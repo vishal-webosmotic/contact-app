@@ -1,8 +1,10 @@
+import Button from 'react-bootstrap/Button';
 import { useForm } from 'react-hook-form';
 // import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import './SignUp.css';
+import { getData, setStorage } from '../../services/storage';
 // import { getPostsStatus } from '../../store/userSlice';
 
 export default function SignUp() {
@@ -20,6 +22,10 @@ export default function SignUp() {
     },
   });
 
+  const onSignIn = () => {
+    navigate('/', { replace: true });
+  };
+
   // const { error } = useSelector((state) => state.user);
   // const status = useSelector(getPostsStatus);
 
@@ -27,11 +33,16 @@ export default function SignUp() {
 
   const onSubmit = ({ email, password }) => {
     let obj = { email, password };
-    let mainData = localStorage.getItem('users')
-      ? JSON.parse(localStorage.getItem('users'))
-      : [];
+
+    // let mainData = localStorage.getItem('users')
+    //   ? JSON.parse(localStorage.getItem('users'))
+    //   : [];
+    // let mainData = getData('user');
+    // mainData.push(obj);
+    // localStorage.setItem('users', JSON.stringify(mainData));
+    let mainData = getData('user');
     mainData.push(obj);
-    localStorage.setItem('users', JSON.stringify(mainData));
+    setStorage('user', mainData);
     navigate('/');
   };
 
@@ -93,9 +104,15 @@ export default function SignUp() {
 
         <button>SIGN UP</button>
       </form>
-      <Link to="/" replace="true">
+      <div className="singInButton">
+        <h4>Already register?</h4>
+        <Button variant="primary" size="lg" onClick={onSignIn}>
+          Sign In
+        </Button>
+      </div>
+      {/* <Link to="/" replace="true">
         already a user?
-      </Link>
+      </Link> */}
     </div>
   );
   // }

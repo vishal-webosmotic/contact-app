@@ -24,16 +24,17 @@ export const fetchContent = createAsyncThunk('user/init', async () => {
 export const login = createAsyncThunk('user/login', async (item) => {
   await fakePromise();
   const { email, password } = item;
-  const localStorageData = getData('users');
+  console.log(item);
+  const localStorageData = getData('user');
   const result = localStorageData.find(
-    (item) => item['email'] === email && item['password'] === password
+    (item) => item.email === email && item.password === password
   );
   if (result) {
     localStorage.setItem('currentUser', email);
     // console.log('returning', result);
     return result.email;
   }
-  throw 'user not found';
+  throw new Error('user not found');
 });
 
 export const logout = createAsyncThunk('user/logout', async () => {
@@ -61,7 +62,6 @@ export const userSlice = createSlice({
         state.user = payload;
       })
       .addCase(login.rejected, (state, action) => {
-        state.status = 'failed';
         state.error = action.error.message;
       })
       .addCase(logout.pending, (state, action) => {
@@ -81,4 +81,4 @@ export const userSlice = createSlice({
 export const { contactInfo } = userSlice.actions;
 
 export default userSlice.reducer;
-export const getPostsStatus = (state) => state.user.status;
+// export const getPostsStatus = (state) => state.user.status;
