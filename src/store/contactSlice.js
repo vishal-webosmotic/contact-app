@@ -13,6 +13,7 @@ const initialState = {
   contact: [],
   isLoad: false,
   isUpdate: false,
+  deletingId: '',
 };
 
 export const contactList = createAsyncThunk(
@@ -29,6 +30,7 @@ export const contactList = createAsyncThunk(
 export const contactAdd = createAsyncThunk(
   'contact/contactAdd',
   async (obj, { getState }) => {
+    await fakePromise();
     const { id } = obj;
     if (id) {
       let allContacts = getData(getCurrentUser());
@@ -52,8 +54,10 @@ export const contactAdd = createAsyncThunk(
 export const contactDelete = createAsyncThunk(
   'contact/contactDelete',
   async (id, { getState }) => {
-    const { contacts } = getState();
-
+    await fakePromise();
+    let { contacts, deletingId } = getState();
+    deletingId = id;
+    console.log(deletingId);
     const afterDelete = contacts.contacts.filter((item) => {
       return item.id !== id;
     });
@@ -104,8 +108,12 @@ export const contactSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+      .addCase(contactDelete.pending, (state, action) => {
+        state.deletingId = action.meta.arg;
+      })
       .addCase(contactDelete.fulfilled, (state, { payload }) => {
         state.contacts = payload;
+        state.deletingId = '';
       })
       .addCase(contactDetailsField.fulfilled, (state, { payload }) => {
         state.contact = payload;

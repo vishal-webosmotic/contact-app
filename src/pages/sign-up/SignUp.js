@@ -44,6 +44,10 @@ export default function SignUp() {
     }
   };
 
+  const handleError = () => {
+    dispatch(clearError());
+  };
+
   return (
     <div className="container">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -99,7 +103,7 @@ export default function SignUp() {
           <p className="errorMes">{errors.confirmPassword?.message}</p>
         </div>
         {error}
-        <button>SIGN UP</button>
+        <button onClick={handleError}>SIGN UP</button>
       </form>
       <div className="singInButton">
         <h4>Already register?</h4>

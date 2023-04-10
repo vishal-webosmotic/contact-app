@@ -117,7 +117,14 @@ const ContactForm = () => {
           {/* <button>{id ? 'Edit' : 'Add'} contact</button> */}
           <button>
             {/* {id ? 'Edit' : 'Add'} */}
-            {isUpdate ? <Loader /> : ' contact'}
+            {isUpdate ? (
+              <Loader />
+            ) : (
+              <>
+                {' '}
+                {id ? 'Edit' : 'Add'} {' contact'}
+              </>
+            )}
           </button>
         </form>
       </div>

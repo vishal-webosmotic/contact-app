@@ -37,6 +37,10 @@ export default function SignIn() {
     dispatch(login(data));
   };
 
+  const handleError = () => {
+    dispatch(clearError());
+  };
+
   // if (status === "loading") return <div>Loading signIn..</div>;
 
   // if (status === "succeeded") {
@@ -77,7 +81,7 @@ export default function SignIn() {
           <p className="errorMes">{errors.password?.message}</p>
         </div>
         {error}
-        <button>SIGN In</button>
+        <button onClick={handleError}>SIGN In</button>
       </form>
       {/* <Link to="/signup" replace={true}>
         become a user?

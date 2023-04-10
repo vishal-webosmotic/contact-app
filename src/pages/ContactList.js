@@ -10,14 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import Loader from '../components/spinner/Spinner';
 import { contactList, contactDelete } from '../store/contactSlice';
 import { logout } from '../store/userSlice';
+import image from './../assets/placeHolder.jpg';
+
 const ContactList = () => {
-  // const { error, user, ...rest } = useSelector((state) => state.user);
-  // const state = useSelector((state) => state.contacts);
+  const { contacts, status, deletingId } = useSelector(
+    (state) => state.contacts
+  );
 
-  // console.log('line 14 ', state);
-  // console.log("{ error, ...rest }", { error, user, ...rest });
-
-  const { contacts, status } = useSelector((state) => state.contacts);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleClick = () => {
@@ -28,13 +27,11 @@ const ContactList = () => {
     dispatch(logout());
   };
 
-  const handleDelete = (id) => {
-    dispatch(contactDelete(id));
+  const handleDelete = async (id) => {
+    await dispatch(contactDelete(id));
   };
 
-  const handleUpdate = (id) => {
-    // dispatch(contactUpdate(id));
-    // navigate('/contact');
+  const handleUpdate = async (id) => {
     navigate(`/contact/${id}`);
   };
 
@@ -74,8 +71,9 @@ const ContactList = () => {
                     <td>{item.name}</td>
                     <td>{item.phoneNumber}</td>
                     <td>
+                      {console.log('map ', item.image)}
                       <img
-                        src={item.image}
+                        src={!item.image ? image : item.image}
                         alt="img"
                         width="100px"
                         height="100px"
@@ -90,13 +88,17 @@ const ContactList = () => {
                         >
                           Update
                         </Button>
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          delete
-                        </Button>
+                        {deletingId === item.id ? (
+                          <Loader />
+                        ) : (
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => handleDelete(item.id)}
+                          >
+                            delete
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
