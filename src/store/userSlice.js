@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import fakePromise from '../services/fakePromise';
-import getCurrentUser, { getData } from '../services/storage';
+import getCurrentUser, { getData, setStorage } from '../services/storage';
+import fakePromise from '../services/utils';
 
 const initialState = {
   user: '',
@@ -16,6 +16,7 @@ export const fetchContent = createAsyncThunk('user/init', async () => {
   const data = getCurrentUser();
   // console.log('data', { data });
   if (!data) {
+    // eslint-disable-next-line no-throw-literal
     throw 'fetch content error';
   }
   return data;
@@ -37,10 +38,31 @@ export const login = createAsyncThunk('user/login', async (item) => {
   throw new Error('user not found');
 });
 
+export const singUp = createAsyncThunk(
+  'user/singUp',
+  async (obj, { getState }) => {
+    await fakePromise();
+    let localStorageData = getData('user');
+    const result = localStorageData.some((item) => item.email === obj.email);
+    if (!result) {
+      localStorageData.push(obj);
+      setStorage('user', localStorageData);
+      return obj;
+    }
+    throw new Error('email is already exists signup with different email');
+  }
+);
+
+export const clearError = createAsyncThunk('user/clearError', async () => {
+  return true;
+});
+
 export const logout = createAsyncThunk(
   'user/logout',
   async (_, { getState }) => {
     await fakePromise();
+    const state = getState();
+    console.log(state);
     // if (localStorage.getItem('currentUser')) {
     //   localStorage.removeItem('currentUser');
     // }
@@ -61,6 +83,13 @@ export const userSlice = createSlice({
       .addCase(fetchContent.rejected, (state, action) => {
         state.loading = false;
       })
+      .addCase(singUp.fulfilled, (state, action) => {
+        state.error = [];
+      })
+      .addCase(singUp.rejected, (state, action) => {
+        // state.error = payload;
+        state.error = action.error.message;
+      })
       .addCase(login.fulfilled, (state, { payload }) => {
         state.user = payload;
       })
@@ -78,6 +107,9 @@ export const userSlice = createSlice({
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+      .addCase(clearError.fulfilled, (state, { payload }) => {
+        state.error = [];
       });
   },
 });

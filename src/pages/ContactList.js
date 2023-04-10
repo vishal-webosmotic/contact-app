@@ -7,7 +7,7 @@ import './contact-form/ContactForm.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import Loader from '../components/Spinner';
+import Loader from '../components/spinner/Spinner';
 import { contactList, contactDelete } from '../store/contactSlice';
 import { logout } from '../store/userSlice';
 const ContactList = () => {
@@ -21,7 +21,7 @@ const ContactList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleClick = () => {
-    navigate('/contact', { replace: true });
+    navigate('/contact');
   };
 
   const handleLogout = () => {
@@ -35,7 +35,7 @@ const ContactList = () => {
   const handleUpdate = (id) => {
     // dispatch(contactUpdate(id));
     // navigate('/contact');
-    navigate(`/contact/${id}`, { replace: true });
+    navigate(`/contact/${id}`);
   };
 
   useEffect(() => {
@@ -45,6 +45,7 @@ const ContactList = () => {
   if (status === 'loading') {
     return (
       <div className="myLoader">
+        {console.log('line 48')}
         <Loader />
       </div>
     );

@@ -1,17 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 
 import contactSlice from './contactSlice';
 import userSlice from './userSlice';
 
-const store = configureStore({
-  reducer: {
-    user: userSlice,
-    contacts: contactSlice,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
+const combinedReducer = combineReducers({
+  user: userSlice,
+  contacts: contactSlice,
 });
 
+const rootReducer = (state, action) => {
+  if (action.type === 'user/logout/fulfilled') {
+    state = undefined;
+  }
+  return combinedReducer(state, action);
+};
+
+const store = configureStore({
+  reducer: rootReducer,
+});
 export default store;

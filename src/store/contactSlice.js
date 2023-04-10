@@ -1,17 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import fakePromise from '../services/fakePromise';
 import getCurrentUser, {
   getData,
   setLocalStorage,
   getDataById,
 } from '../services/storage';
+import fakePromise from '../services/utils';
 
 const initialState = {
   contacts: [],
   status: 'idle',
   contact: [],
   isLoad: false,
+  isUpdate: false,
 };
 
 export const contactList = createAsyncThunk(
@@ -30,8 +31,6 @@ export const contactAdd = createAsyncThunk(
   async (obj, { getState }) => {
     const { id } = obj;
     if (id) {
-      // obj.id = Number(id);
-      // let allContacts = JSON.parse(localStorage.getItem(getCurrentUser()));
       let allContacts = getData(getCurrentUser());
       allContacts.splice(
         allContacts.findIndex((item) => item.id.toString() === id.toString()),
@@ -42,7 +41,6 @@ export const contactAdd = createAsyncThunk(
     } else {
       const newId = Math.floor(Math.random() * 1000);
       obj.id = newId;
-      console.log(obj);
       const localStorageData = getData(getCurrentUser());
       localStorageData.push(obj);
       setLocalStorage(localStorageData);
@@ -95,9 +93,11 @@ export const contactSlice = createSlice({
     builder
       .addCase(contactAdd.pending, (state, action) => {
         state.status = 'loading';
+        state.isUpdate = true;
       })
       .addCase(contactAdd.fulfilled, (state, { payload }) => {
         state.contacts = payload;
+        state.isUpdate = false;
         state.status = 'succeeded';
       })
       .addCase(contactAdd.rejected, (state, action) => {

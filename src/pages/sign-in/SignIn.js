@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
+
 import Button from 'react-bootstrap/Button';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { login } from '../../store/userSlice';
+import { login, clearError } from '../../store/userSlice';
 
 export default function SignIn() {
   const { error } = useSelector((state) => state.user);
@@ -22,6 +24,10 @@ export default function SignIn() {
       password: 'abcd1234',
     },
   });
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   const onSignUp = () => {
     navigate('/signup');

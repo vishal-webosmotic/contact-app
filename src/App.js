@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RouterProvider } from 'react-router-dom';
 
-import Loader from './components/Spinner';
+import Loader from './components/spinner/Spinner';
 import { contactRoutes, routes } from './routes';
 import { fetchContent } from './store/userSlice';
 import 'bootstrap/dist/css/bootstrap.min.css';

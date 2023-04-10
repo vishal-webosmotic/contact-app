@@ -1,14 +1,20 @@
+import { useEffect } from 'react';
+
 import Button from 'react-bootstrap/Button';
 import { useForm } from 'react-hook-form';
-// import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { singUp, clearError } from '../../store/userSlice';
 import './SignUp.css';
-import { getData, setStorage } from '../../services/storage';
+// import { getData, setStorage } from '../../services/storage';
 // import { getPostsStatus } from '../../store/userSlice';
 
 export default function SignUp() {
   const navigate = useNavigate();
+  const { error } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -22,31 +28,22 @@ export default function SignUp() {
     },
   });
 
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
   const onSignIn = () => {
-    navigate('/', { replace: true });
-  };
-
-  // const { error } = useSelector((state) => state.user);
-  // const status = useSelector(getPostsStatus);
-
-  // if (status === "loading") return <div>Loading..</div>;
-
-  const onSubmit = ({ email, password }) => {
-    let obj = { email, password };
-
-    // let mainData = localStorage.getItem('users')
-    //   ? JSON.parse(localStorage.getItem('users'))
-    //   : [];
-    // let mainData = getData('user');
-    // mainData.push(obj);
-    // localStorage.setItem('users', JSON.stringify(mainData));
-    let mainData = getData('user');
-    mainData.push(obj);
-    setStorage('user', mainData);
     navigate('/');
   };
 
-  // if (status === "succeeded") {
+  const onSubmit = async ({ email, password }) => {
+    let obj = { email, password };
+    const { meta } = await dispatch(singUp(obj));
+    if (meta.requestStatus !== 'rejected') {
+      navigate('/');
+    }
+  };
+
   return (
     <div className="container">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -101,7 +98,7 @@ export default function SignUp() {
           />
           <p className="errorMes">{errors.confirmPassword?.message}</p>
         </div>
-
+        {error}
         <button>SIGN UP</button>
       </form>
       <div className="singInButton">
@@ -110,13 +107,6 @@ export default function SignUp() {
           Sign In
         </Button>
       </div>
-      {/* <Link to="/" replace="true">
-        already a user?
-      </Link> */}
     </div>
   );
-  // }
-  // if (status === "failed") {
-  //   return error;
-  // }
 }
