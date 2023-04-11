@@ -21,7 +21,7 @@ export const contactList = createAsyncThunk(
   async (_, { getState }) => {
     await fakePromise();
     const state = getState();
-    let { user } = state.user;
+    const { user } = state.user;
     const localStorageData = getData(user);
     return localStorageData;
   }
@@ -33,7 +33,7 @@ export const contactAdd = createAsyncThunk(
     await fakePromise();
     const { id } = obj;
     if (id) {
-      let allContacts = getData(getCurrentUser());
+      const allContacts = getData(getCurrentUser());
       allContacts.splice(
         allContacts.findIndex((item) => item.id.toString() === id.toString()),
         1,

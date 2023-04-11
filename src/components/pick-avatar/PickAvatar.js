@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import deleteIcon from './../../assets/deleteicon.svg';
 import image from './../../assets/placeHolder.jpg';
 import { getBase64 } from './../../services/utils';
 import './PickAvatar.css';
@@ -18,17 +19,23 @@ export function PickAvatar({ name, register, setImg, img }) {
     [onChange, setImg]
   );
 
+  const handleDelete = () => {
+    setImg('');
+  };
+
   return (
     <div>
-      <label>Profile photo : </label>
-      {/* {img && (
-        <img src={img} className="avatar" alt="profile img" width="100px" />
-      )} */}
-      {img ? (
-        <img src={img} className="avatar" alt="profile img" width="100px" />
-      ) : (
-        <img src={image} className="avatar11" alt="profile img" width="100px" />
-      )}
+      <label>Profile photo </label>
+      <div className="container">
+        <img src={img ? img : image} alt="profile img" width="100px" />
+        <img
+          src={deleteIcon}
+          className="avatar"
+          alt="profile img"
+          width="10px"
+          onClick={handleDelete}
+        />
+      </div>
       <input
         type="file"
         accept="image/*"

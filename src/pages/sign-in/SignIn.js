@@ -1,19 +1,19 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import { useForm } from 'react-hook-form';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { login, clearError } from '../../store/userSlice';
+import { login } from '../../store/userSlice';
+import Loader from './../../components/spinner/Spinner';
 
 export default function SignIn() {
-  const { error } = useSelector((state) => state.user);
+  // const { error } = useSelector((state) => state.user);
   const navigate = useNavigate();
-
-  // console.log("{ error, ...rest }", { error, ...rest });
-  // const status = useSelector(getPostsStatus);
   const dispatch = useDispatch();
+  const [loader, setLoader] = useState(false);
+  const [error, setError] = useState();
   const {
     register,
     handleSubmit,
@@ -25,25 +25,19 @@ export default function SignIn() {
     },
   });
 
-  useEffect(() => {
-    dispatch(clearError());
-  }, [dispatch]);
-
   const onSignUp = () => {
     navigate('/signup');
   };
-  const onSubmit = (data) => {
-    // console.log('line 24', data);
-    dispatch(login(data));
+  const onSubmit = async (data) => {
+    setLoader(true);
+    setError('');
+    const status = await dispatch(login(data));
+    if (status.error) {
+      setError(status.error.message);
+    }
+    setLoader(false);
   };
 
-  const handleError = () => {
-    dispatch(clearError());
-  };
-
-  // if (status === "loading") return <div>Loading signIn..</div>;
-
-  // if (status === "succeeded") {
   return (
     <div className="container">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -80,22 +74,16 @@ export default function SignIn() {
           />
           <p className="errorMes">{errors.password?.message}</p>
         </div>
-        {error}
-        <button onClick={handleError}>SIGN In</button>
+        <div className="errorMes">{error}</div>
+        <button>{loader ? <Loader /> : 'Sign In '}</button>
       </form>
-      {/* <Link to="/signup" replace={true}>
-        become a user?
-      </Link> */}
+
       <div className="signUpButton">
-        <h4>become a user?</h4>
+        <h4>Become a user?</h4>
         <Button variant="primary" size="lg" onClick={onSignUp}>
           Sign Up
         </Button>
       </div>
     </div>
   );
-  // }
-  // if (status === "failed") {
-  //   return error;
-  // }
 }

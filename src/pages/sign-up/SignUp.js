@@ -1,19 +1,22 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { singUp, clearError } from '../../store/userSlice';
+import { singUp } from '../../store/userSlice';
 import './SignUp.css';
 // import { getData, setStorage } from '../../services/storage';
 // import { getPostsStatus } from '../../store/userSlice';
+// import Loader from './../../components/spinner/Spinner';
 
 export default function SignUp() {
   const navigate = useNavigate();
-  const { error } = useSelector((state) => state.user);
+  // const { error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [signupLoader, setSingUpLoader] = useState();
+  const [error, setError] = useState();
 
   const {
     register,
@@ -28,24 +31,24 @@ export default function SignUp() {
     },
   });
 
-  useEffect(() => {
-    dispatch(clearError());
-  }, [dispatch]);
-
   const onSignIn = () => {
     navigate('/');
   };
 
   const onSubmit = async ({ email, password }) => {
-    let obj = { email, password };
-    const { meta } = await dispatch(singUp(obj));
-    if (meta.requestStatus !== 'rejected') {
+    setSingUpLoader(true);
+    setError('');
+    const obj = { email, password };
+    const status = await dispatch(singUp(obj));
+    if (status.error) {
+      setError(status.error.message);
+    }
+    if (!status.rejectedWithValue) {
+      setSingUpLoader(false);
+    }
+    if (status.meta.requestStatus !== 'rejected') {
       navigate('/');
     }
-  };
-
-  const handleError = () => {
-    dispatch(clearError());
   };
 
   return (
@@ -102,8 +105,17 @@ export default function SignUp() {
           />
           <p className="errorMes">{errors.confirmPassword?.message}</p>
         </div>
-        {error}
-        <button onClick={handleError}>SIGN UP</button>
+        <div className="errorMes">{error}</div>
+        {/* <button>{signupLoader ? <Loader /> : ' SIGN UP'}</button> */}
+        <button>
+          {signupLoader ? (
+            <>
+              <span className="loader"></span>
+            </>
+          ) : (
+            ' SIGN UP'
+          )}
+        </button>
       </form>
       <div className="singInButton">
         <h4>Already register?</h4>

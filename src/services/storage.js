@@ -23,11 +23,11 @@ export function setStorage(key, value) {
 }
 
 export function getDataById(id) {
-  let currentUserList = getData(getCurrentUser());
-  console.log({ currentUserList, id });
+  const currentUserList = getData(getCurrentUser());
+  // console.log({ currentUserList, id });
   const getContact = currentUserList.find((item) => {
     return item.id.toString() === id.toString();
   });
-  console.log('getDataBy id ', getContact);
+  // console.log('getDataBy id ', getContact);
   return getContact;
 }

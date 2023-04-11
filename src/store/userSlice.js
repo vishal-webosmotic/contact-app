@@ -7,6 +7,7 @@ const initialState = {
   user: '',
   error: [],
   loading: true,
+  isLogoutLoader: false,
   // status: "idle",
   // contacts: null,
 };
@@ -25,24 +26,23 @@ export const fetchContent = createAsyncThunk('user/init', async () => {
 export const login = createAsyncThunk('user/login', async (item) => {
   await fakePromise();
   const { email, password } = item;
-  console.log(item);
   const localStorageData = getData('user');
   const result = localStorageData.find(
     (item) => item.email === email && item.password === password
   );
+
   if (result) {
     localStorage.setItem('currentUser', email);
-    // console.log('returning', result);
     return result.email;
   }
-  throw new Error('user not found');
+  throw new Error('User not found');
 });
 
 export const singUp = createAsyncThunk(
   'user/singUp',
   async (obj, { getState }) => {
     await fakePromise();
-    let localStorageData = getData('user');
+    const localStorageData = getData('user');
     const result = localStorageData.some((item) => item.email === obj.email);
     if (!result) {
       localStorageData.push(obj);
@@ -61,12 +61,8 @@ export const logout = createAsyncThunk(
   'user/logout',
   async (_, { getState }) => {
     await fakePromise();
-    const state = getState();
-    console.log(state);
-    // if (localStorage.getItem('currentUser')) {
-    //   localStorage.removeItem('currentUser');
-    // }
-    // throw "error";
+    const { user } = getState();
+    return user;
   }
 );
 
@@ -98,17 +94,20 @@ export const userSlice = createSlice({
       })
       .addCase(logout.pending, (state, action) => {
         state.loading = true;
+        state.isLogoutLoader = true;
       })
       .addCase(logout.fulfilled, (state, { payload }) => {
         state.loading = false;
+        state.isLogoutLoader = false;
         state.user = null;
         localStorage.removeItem('currentUser');
       })
       .addCase(logout.rejected, (state, action) => {
         state.loading = false;
+        state.isLogoutLoader = false;
         state.error = action.error.message;
       })
-      .addCase(clearError.fulfilled, (state, { payload }) => {
+      .addCase(clearError.fulfilled, (state) => {
         state.error = [];
       });
   },

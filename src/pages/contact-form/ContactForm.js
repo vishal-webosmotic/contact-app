@@ -12,7 +12,7 @@ import { contactAdd, contactDetailsField } from '../../store/contactSlice';
 const ContactForm = () => {
   const dispatch = useDispatch();
   const { contact, isUpdate } = useSelector((state) => state.contacts);
-  let { id } = useParams();
+  const { id } = useParams();
   const [img, setImg] = useState();
   const {
     register,
@@ -41,11 +41,6 @@ const ContactForm = () => {
 
   const navigate = useNavigate();
 
-  // const handleLogout = () => {
-  // dispatch(logout());
-  //   navigate('/');
-  // };
-
   const onHomeClick = () => {
     navigate('/');
   };
@@ -59,13 +54,9 @@ const ContactForm = () => {
 
   return (
     <div>
-      {/* {isLoad ? (
-        <Loader />
-      ) : (
-        <> */}
       <div className="container">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h1> {id ? 'Edit' : 'Add'} contact Details </h1>
+          <h1> {id ? 'Edit' : 'Add'} contact </h1>
           <div className="inputContainer">
             <label htmlFor="name">Name</label>
             <input
@@ -86,7 +77,7 @@ const ContactForm = () => {
                 required: 'Please Enter Your Email!',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Please Enter A Valid Email!',
+                  message: 'Please Enter a Valid Email!',
                 },
               })}
               type="email"
@@ -114,9 +105,7 @@ const ContactForm = () => {
             setImg={setImg}
             img={img}
           />
-          {/* <button>{id ? 'Edit' : 'Add'} contact</button> */}
           <button>
-            {/* {id ? 'Edit' : 'Add'} */}
             {isUpdate ? (
               <Loader />
             ) : (
@@ -132,12 +121,7 @@ const ContactForm = () => {
         <Button variant="primary" size="lg" onClick={onHomeClick}>
           Back
         </Button>
-        {/* <Button variant="danger" size="lg" onClick={handleLogout}>
-          Logout
-        </Button> */}
       </div>
-      {/* </> */}
-      {/* // )} */}
     </div>
   );
 };
